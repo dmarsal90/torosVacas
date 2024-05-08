@@ -35,7 +35,14 @@ class GameController extends Controller
 
         $game = Game::findOrFail($game_id);
 
-        if ($game->game_over) {
+        // Verificar si el juego ha terminado debido al tiempo máximo
+        $currentTime = now();
+        $gameStartTime = $game->created_at;
+        $timeElapsed = $currentTime->diffInMinutes($gameStartTime);
+
+        if ($timeElapsed >= config('game.game_over_time')) {
+            $game->game_over = true;
+            $game->save();
             return response()->json(['message' => 'Game Over'], 400);
         }
 
@@ -52,6 +59,7 @@ class GameController extends Controller
             'vacas' => $evaluation['vacas'],
         ]);
     }
+
 
     private function evaluateCombination($secret, $proposal)
     {
