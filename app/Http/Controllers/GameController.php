@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GameRequest;
 use App\Models\Game;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    public function createGame(Request $request)
+    public function createGame(GameRequest $request)
     {
-        $request->validate([
-            'user' => 'required|string',
-            'age' => 'required|integer',
-        ]);
-
         $game = Game::create([
             'user' => $request->user,
             'age' => $request->age,
@@ -25,5 +21,9 @@ class GameController extends Controller
 
     private function generateSecretNumber()
     {
+        $digits = 4;
+        $min = 10 ** ($digits - 1);
+        $max = (10 ** $digits) - 1;
+        return strval(rand($min, $max));
     }
 }
