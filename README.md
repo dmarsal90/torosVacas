@@ -86,7 +86,3 @@ Start the server
 
 - [@dmarsal90](https://www.github.com/dmarsal90)
 
-
-## 🚀 About Me
-I'm a full stack developer...
-
