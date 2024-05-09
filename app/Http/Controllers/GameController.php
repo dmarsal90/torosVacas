@@ -283,8 +283,17 @@ class GameController extends Controller
     }
 
     /**
+     * @OA\SecurityScheme(
+     *     securityScheme="bearerAuth",
+     *     type="http",
+     *     scheme="bearer",
+     *     bearerFormat="JWT"
+     * )
+     */
+
+    /**
      * @OA\Delete(
-     *     path="/game/{game_id}",
+     *     path="/game/{game_id}/deleteGame",
      *     tags={"Game"},
      *     summary="Delete a game",
      *     @OA\Parameter(
@@ -295,6 +304,7 @@ class GameController extends Controller
      *             type="integer"
      *         )
      *     ),
+     *     security={{"bearerAuth": {}}},
      *     @OA\Response(
      *         response=200,
      *         description="Game deleted successfully",
@@ -321,6 +331,8 @@ class GameController extends Controller
      *     )
      * )
      */
+
+
     public function deleteGame(Request $request, $game_id): \Illuminate\Http\JsonResponse
     {
         // Validar el identificador del juego
