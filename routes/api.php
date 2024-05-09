@@ -12,7 +12,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::prefix('game')->group(function () {
     Route::post('/create', [GameController::class, 'createGame']);
     Route::post('/{game_id}/propose', [GameController::class, 'proposeCombination']);
-    Route::delete('/{game_id}/deleteGame', [GameController::class, 'deleteGame']);
+    Route::delete('/{game_id}/deleteGame', [GameController::class, 'deleteGame'])->middleware('auth:sanctum');
     Route::get('/{game_id}/previous-response/{attempt_number}', [GameController::class, 'getPreviousResponse']);
 });
 Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('l5-swagger.api');
