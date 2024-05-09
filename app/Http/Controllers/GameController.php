@@ -35,6 +35,11 @@ class GameController extends Controller
 
         $game = Game::findOrFail($game_id);
 
+        // Guardar la combinación en el campo 'previous_responses'
+        $game->previous_responses = $game->previous_responses?? [];
+        $game->previous_responses[] = $request->combination;
+        $game->update();
+
         // Verificar si la combinación ya existe
         $existingGame = Game::where('secret_number', $request->combination)->first();
 
@@ -49,7 +54,7 @@ class GameController extends Controller
 
         if ($timeElapsed >= config('game.game_over_time')) {
             $game->game_over = true;
-            $game->save();
+            $game->update();
             return response()->json([
                 'message' => 'Game Over: El tiempo máximo del juego fue alcanzado.',
                 'secret_number' => $game->secret_number,
@@ -60,7 +65,7 @@ class GameController extends Controller
 
         if ($evaluation['toros'] === 4) {
             $game->game_over = true;
-            $game->save();
+            $game->update();
             return response()->json([
                 'combination' => $game->secret_number,
                 'toros' => $evaluation['toros'],
@@ -71,7 +76,7 @@ class GameController extends Controller
 
         // Incrementar el número de intentos
         $game->attempt_number++;
-        $game->save();
+        $game->update();
 
         // Calcular el tiempo restante en el juego
         $timeRemaining = config('game.game_over_time') - $timeElapsed;
@@ -140,6 +145,21 @@ class GameController extends Controller
         // Devolver una respuesta indicando que el juego fue eliminado con éxito
         return response()->json([
             'message' => 'Datos del juego eliminados con éxito.',
+        ], 200);
+    }
+
+    public function getPreviousResponses($game_id): \Illuminate\Http\JsonResponse
+    {
+        // Validar el identificador del juego
+        $game = Game::findOrFail($game_id);
+
+        // Obtener las respuestas previas desde el campo 'previous_responses'
+        $previousResponses = $game->previous_responses;
+
+        // Devolver las respuestas previas
+        return response()->json([
+            'message' => 'Respuestas previas obtenidas.',
+            'data' => $previousResponses,
         ], 200);
     }
 }
