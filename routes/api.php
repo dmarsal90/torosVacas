@@ -11,4 +11,5 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::prefix('game')->group(function () {
     Route::post('/create', [GameController::class, 'createGame']);
     Route::post('/{game_id}/propose', [GameController::class, 'proposeCombination']);
+    Route::delete('/{game_id}/deleteGame', [GameController::class, 'deleteGame']);
 });
