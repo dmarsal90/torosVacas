@@ -152,13 +152,13 @@
                 }
             }
         },
-        "/game/{game_id}": {
+        "/game/{game_id}/deleteGame": {
             "delete": {
                 "tags": [
                     "Game"
                 ],
                 "summary": "Delete a game",
-                "operationId": "e89add289eac3e815b1be90a19885c7e",
+                "operationId": "ea6cbfff0f69360033ffa82ccb3d5eec",
                 "parameters": [
                     {
                         "name": "game_id",
@@ -202,7 +202,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/game/{game_id}/previous/{attempt_number}": {
