@@ -17,8 +17,8 @@ class GameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user' => 'required|string',
-            'age' => 'required|integer',
+            'usuario' => 'required|string',
+            'edad' => 'required|integer',
         ];
     }
 }
