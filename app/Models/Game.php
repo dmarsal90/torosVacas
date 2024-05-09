@@ -9,7 +9,10 @@ class Game extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'previous_responses' => 'array',
+    ];
     protected $fillable = [
-        'user', 'age', 'secret_number', 'game_over'
+        'user', 'age', 'secret_number', 'game_over', 'attempt_number', 'previous_responses'
     ];
 }
