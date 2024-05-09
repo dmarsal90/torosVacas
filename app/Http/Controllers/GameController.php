@@ -129,4 +129,17 @@ class GameController extends Controller
         return ['toros' => $toros, 'vacas' => $vacas];
     }
 
+    public function deleteGame(Request $request, $game_id): \Illuminate\Http\JsonResponse
+    {
+        // Validar el identificador del juego
+        $game = Game::findOrFail($game_id);
+
+        // Eliminar el juego
+        $game->delete();
+
+        // Devolver una respuesta indicando que el juego fue eliminado con éxito
+        return response()->json([
+            'message' => 'Datos del juego eliminados con éxito.',
+        ], 200);
+    }
 }
