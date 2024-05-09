@@ -8,20 +8,18 @@
 1. Clone this repo
 
 ```
-git clone https://github.com/dmarsal90/BSE-test.git
+git clone https://github.com/dmarsal90/torosVacas.git
 ```
 
 2. Install composer packages
 
 ```
+cd torosVacas
 composer install
 ```
 
 3. Create and setup .env file
 
-```
-cd backend
-```
 make a copy of .env.example
 ```
 copy .env.example .env
@@ -53,13 +51,13 @@ php artisan db:seed
 Clone the project
 
 ```bash
-  git clone https://github.com/dmarsal90/BSE-test.git
+  git clone https://github.com/dmarsal90/torosVacas.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd BSE-test
+  cd torosVacas
 ```
 
 Install dependencies
@@ -73,6 +71,11 @@ Start the server
 ```bash
   php artisan serve
 ```
+
+[API documentation](http://localhost:8000/api/documentation)
+
+
+
 ## Author
 
 - [@dmarsal90](https://www.github.com/dmarsal90)
