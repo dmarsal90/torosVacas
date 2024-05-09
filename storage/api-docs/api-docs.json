@@ -1,0 +1,368 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "torosVacas API",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "localhost/api/game"
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authenticate user",
+                "operationId": "e58a6d6153565a2bbafc4bcfd37dc627",
+                "requestBody": {
+                    "description": "User credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "User authenticated successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid credentials"
+                    },
+                    "422": {
+                        "description": "Validation error: Invalid email or password format"
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout user",
+                "operationId": "77f087e42789d201b02ec497ee566ac8",
+                "responses": {
+                    "204": {
+                        "description": "User logged out successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized: User not authenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/game": {
+            "post": {
+                "tags": [
+                    "Game"
+                ],
+                "summary": "Create a new game",
+                "operationId": "8f90781390d9888376569768178a6347",
+                "requestBody": {
+                    "description": "Game creation data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "usuario": {
+                                        "description": "Game identifier",
+                                        "type": "string"
+                                    },
+                                    "edad": {
+                                        "description": "User age",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Game created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "game_id": {
+                                            "description": "The ID of the created game",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/game/{game_id}/propose": {
+            "post": {
+                "tags": [
+                    "Game"
+                ],
+                "summary": "Propose a combination for a game",
+                "operationId": "24f376630d87d186d44cecd23065214b",
+                "parameters": [
+                    {
+                        "name": "game_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Combination proposal data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "combination": {
+                                        "description": "The proposed combination",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Combination proposed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "combinacion": {
+                                            "description": "The proposed combination",
+                                            "type": "string"
+                                        },
+                                        "toros": {
+                                            "description": "The number of 'toros' in the combination",
+                                            "type": "integer"
+                                        },
+                                        "vacas": {
+                                            "description": "The number of 'vacas' in the combination",
+                                            "type": "integer"
+                                        },
+                                        "intentos": {
+                                            "description": "The number of attempts made",
+                                            "type": "integer"
+                                        },
+                                        "tiempo_restante": {
+                                            "description": "The remaining time in the game",
+                                            "type": "integer"
+                                        },
+                                        "evaluacion": {
+                                            "description": "The evaluation score of the game",
+                                            "type": "integer"
+                                        },
+                                        "ranking": {
+                                            "description": "The ranking of the game",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Error message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/game/{game_id}/deleteGame": {
+            "delete": {
+                "tags": [
+                    "Game"
+                ],
+                "summary": "Delete a game",
+                "operationId": "ea6cbfff0f69360033ffa82ccb3d5eec",
+                "parameters": [
+                    {
+                        "name": "game_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Game deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Success message indicating the game was deleted successfully",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Game not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Error message indicating the game was not found",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/game/{game_id}/previous/{attempt_number}": {
+            "get": {
+                "tags": [
+                    "Game"
+                ],
+                "summary": "Get the previous response for a game",
+                "operationId": "4ad619e52cbf73a2b333245277478909",
+                "parameters": [
+                    {
+                        "name": "game_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "attempt_number",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Previous response retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "combination": {
+                                            "description": "The proposed combination for the specified attempt",
+                                            "type": "string"
+                                        },
+                                        "toros": {
+                                            "description": "The number of 'toros' in the proposed combination",
+                                            "type": "integer"
+                                        },
+                                        "vacas": {
+                                            "description": "The number of 'vacas' in the proposed combination",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid attempt number",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Error message indicating the attempt number is not valid",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No response found for the specified attempt",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Error message indicating no response was found for the specified attempt",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

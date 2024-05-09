@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('games', function (Blueprint $table) {
-            $table->json('previous_responses')->nullable()->after('secret_number');
+            $table->text('previous_responses')->nullable()->after('secret_number');
         });
     }
 
