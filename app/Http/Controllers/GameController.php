@@ -188,11 +188,18 @@ class GameController extends Controller
 
         $combination = $previous_responses[$attempt_number - 1];
 
-        // Devolver la combinación y otras informaciones relevantes
+        // Calcular el número de toros y vacas en el intento especificado
+        $evaluation = $this->evaluateCombination($game->secret_number, $combination);
+        $toros = $evaluation['toros'];
+        $vacas = $evaluation['vacas'];
+
+        // Devolver la combinación, toros y vacas en el intento especificado
         return response()->json([
             'combination' => $combination,
-            // Otras informaciones que desees devolver, como el número de toros y vacas en ese intento
+            'toros' => $toros,
+            'vacas' => $vacas,
         ]);
     }
+
 
 }
