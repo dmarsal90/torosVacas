@@ -5,9 +5,55 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GameRequest;
 use App\Models\Game;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
 
+
+/**
+ * @OA\Info(
+ *     title="torosVacas API",
+ *     version="1.0",
+ * )
+ *
+ * @OA\Server(url="localhost/api/game")
+ */
 class GameController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/game",
+     *     tags={"Game"},
+     *     summary="Create a new game",
+     *     @OA\RequestBody(
+     *         description="Game creation data",
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="usuario",
+     *                 type="string",
+     *                 description="Game identifier"
+     *             ),
+     *             @OA\Property(
+     *                 property="edad",
+     *                 type="integer",
+     *                 description="User age"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Game created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="game_id",
+     *                 type="integer",
+     *                 description="The ID of the created game"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function createGame(GameRequest $request): \Illuminate\Http\JsonResponse
     {
         $game = Game::create([
@@ -27,6 +73,87 @@ class GameController extends Controller
         return strval(rand($min, $max));
     }
 
+    /**
+     * @OA\Post(
+     *     path="/game/{game_id}/propose",
+     *     tags={"Game"},
+     *     summary="Propose a combination for a game",
+     *     @OA\Parameter(
+     *         name="game_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Combination proposal data",
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="combination",
+     *                 type="string",
+     *                 description="The proposed combination"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Combination proposed successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="combinacion",
+     *                 type="string",
+     *                 description="The proposed combination"
+     *             ),
+     *             @OA\Property(
+     *                 property="toros",
+     *                 type="integer",
+     *                 description="The number of 'toros' in the combination"
+     *             ),
+     *             @OA\Property(
+     *                 property="vacas",
+     *                 type="integer",
+     *                 description="The number of 'vacas' in the combination"
+     *             ),
+     *             @OA\Property(
+     *                 property="intentos",
+     *                 type="integer",
+     *                 description="The number of attempts made"
+     *             ),
+     *             @OA\Property(
+     *                 property="tiempo_restante",
+     *                 type="integer",
+     *                 description="The remaining time in the game"
+     *             ),
+     *             @OA\Property(
+     *                 property="evaluacion",
+     *                 type="integer",
+     *                 description="The evaluation score of the game"
+     *             ),
+     *             @OA\Property(
+     *                 property="ranking",
+     *                 type="integer",
+     *                 description="The ranking of the game"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Error message"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function proposeCombination(Request $request, $game_id): \Illuminate\Http\JsonResponse
     {
         $request->validate([
@@ -155,6 +282,45 @@ class GameController extends Controller
         return ['toros' => $toros, 'vacas' => $vacas];
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/game/{game_id}",
+     *     tags={"Game"},
+     *     summary="Delete a game",
+     *     @OA\Parameter(
+     *         name="game_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Game deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Success message indicating the game was deleted successfully"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Game not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Error message indicating the game was not found"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function deleteGame(Request $request, $game_id): \Illuminate\Http\JsonResponse
     {
         // Validar el identificador del juego
@@ -169,6 +335,75 @@ class GameController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/game/{game_id}/previous/{attempt_number}",
+     *     tags={"Game"},
+     *     summary="Get the previous response for a game",
+     *     @OA\Parameter(
+     *         name="game_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="attempt_number",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Previous response retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="combination",
+     *                 type="string",
+     *                 description="The proposed combination for the specified attempt"
+     *             ),
+     *             @OA\Property(
+     *                 property="toros",
+     *                 type="integer",
+     *                 description="The number of 'toros' in the proposed combination"
+     *             ),
+     *             @OA\Property(
+     *                 property="vacas",
+     *                 type="integer",
+     *                 description="The number of 'vacas' in the proposed combination"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid attempt number",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Error message indicating the attempt number is not valid"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No response found for the specified attempt",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Error message indicating no response was found for the specified attempt"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function getPreviousResponse($game_id, $attempt_number)
     {
         $game = Game::findOrFail($game_id);
