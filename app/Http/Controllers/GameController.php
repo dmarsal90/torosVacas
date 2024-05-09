@@ -36,8 +36,29 @@ class GameController extends Controller
         $game = Game::findOrFail($game_id);
 
         // Guardar la combinación en el campo 'previous_responses'
-        $game->previous_responses = $game->previous_responses?? [];
-        $game->previous_responses[] = $request->combination;
+        $previous_responses = json_decode($game->previous_responses, true);
+
+// Verificar si $previous_responses es un array válido
+        if (!is_array($previous_responses)) {
+            $previous_responses = [];
+        }
+
+// Agregar la nueva combinación al array
+        $previous_responses[] = $request->combination;
+
+// Convertir el array actualizado a una cadena JSON
+        $jsonPreviousResponses = json_encode($previous_responses);
+
+// Verificar si json_encode() tuvo éxito
+        if ($jsonPreviousResponses === false) {
+            // Manejar el error, por ejemplo, lanzar una excepción o registrar un mensaje de error
+            // También puedes usar json_last_error() para obtener más información sobre el error
+            throw new \Exception('Error al codificar el array a JSON: ' . json_last_error_msg());
+        }
+
+// Establecer el nuevo JSON en el campo 'previous_responses'
+        $game->previous_responses = $jsonPreviousResponses;
+
         $game->update();
 
         // Verificar si la combinación ya existe
@@ -148,18 +169,30 @@ class GameController extends Controller
         ], 200);
     }
 
-    public function getPreviousResponses($game_id): \Illuminate\Http\JsonResponse
+    public function getPreviousResponse($game_id, $attempt_number)
     {
-        // Validar el identificador del juego
         $game = Game::findOrFail($game_id);
 
-        // Obtener las respuestas previas desde el campo 'previous_responses'
-        $previousResponses = $game->previous_responses;
+        // Verificar si el número del intento es válido
+        if ($attempt_number < 1 || $attempt_number > $game->attempt_number) {
+            return response()->json(['message' => 'El número del intento no es válido.'], 400);
+        }
 
-        // Devolver las respuestas previas
+        // Obtener la combinación propuesta en el intento especificado
+        $previous_responses = json_decode($game->previous_responses, true);
+
+        // Verificar si el intento especificado tiene una combinación asociada
+        if (!isset($previous_responses[$attempt_number - 1])) {
+            return response()->json(['message' => 'No hay combinación registrada para este intento.'], 404);
+        }
+
+        $combination = $previous_responses[$attempt_number - 1];
+
+        // Devolver la combinación y otras informaciones relevantes
         return response()->json([
-            'message' => 'Respuestas previas obtenidas.',
-            'data' => $previousResponses,
-        ], 200);
+            'combination' => $combination,
+            // Otras informaciones que desees devolver, como el número de toros y vacas en ese intento
+        ]);
     }
+
 }
