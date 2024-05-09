@@ -66,6 +66,12 @@ Install dependencies
   composer install
 ```
 
+Create database
+
+```bash
+php artisan migrate:fresh
+```
+
 Start the server
 
 ```bash
@@ -79,4 +85,8 @@ Start the server
 ## Author
 
 - [@dmarsal90](https://www.github.com/dmarsal90)
+
+
+## 🚀 About Me
+I'm a full stack developer...
 
